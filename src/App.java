@@ -1,5 +1,6 @@
 public class App {
     public static void main(final String[] args) throws Exception {
+        // Ignoring number of threads for now.
         if (args.length < 6) {
             System.out.println("Usage: java App <size> <threshold> <xlo> <xhi> <ylo> <yhi>");
             System.exit(1);

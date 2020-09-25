@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -25,6 +24,8 @@ public class Mandelbrot {
         this.imgArr = new int[(s * s)];
     }
 
+    // Loops over all the pixels for the image and sets the color according to the
+    // iterations.
     public void generate() {
         final long startTime = System.currentTimeMillis();
         for (int i = 0; i < (this.width * this.height); i++) {
@@ -38,6 +39,7 @@ public class Mandelbrot {
         System.out.printf("Time (ms): %d", System.currentTimeMillis() - startTime);
     }
 
+    // Computes the iterations until the threshold is reached or x^2 + y^2 < 4.
     private int compute(double xc, double yc) {
         int i = 0;
         double x = 0.0;
@@ -55,6 +57,7 @@ public class Mandelbrot {
         return i;
     }
 
+    // Saves the integer array as a png image.
     public void save(String name) {
         BufferedImage image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
         image.setRGB(0, 0, this.width, this.height, this.imgArr, 0, this.width);
