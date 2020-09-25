@@ -27,13 +27,11 @@ public class Mandelbrot {
 
     public void generate() {
         final long startTime = System.currentTimeMillis();
-        double xDif = this.xhi - this.xlo;
-        double yDif = this.yhi - this.ylo;
         for (int i = 0; i < (this.width * this.height); i++) {
             double x = i % this.width;
             double y = i / this.width;
-            double xc = this.xlo + xDif * x / this.width;
-            double yc = this.ylo + yDif * y / this.height;
+            double xc = (this.xhi - this.xlo) * x / this.width + this.xlo;
+            double yc = (this.yhi - this.ylo) * y / this.width + this.ylo;
             int iters = this.compute(xc, yc);
             this.imgArr[i] = (255 - iters) * 6;
         }
@@ -46,7 +44,7 @@ public class Mandelbrot {
         double y = 0.0;
         double xy = 2 * x * y;
 
-        while (x + y < 2 && i < this.thresh) {
+        while (x + y < 4 && i < this.thresh) {
             double xt = x - y + xc;
             double yt = xy + yc;
             x = xt * xt;
