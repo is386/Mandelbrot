@@ -1,4 +1,4 @@
-public class App {
+public class Main {
     public static void main(final String[] args) throws Exception {
         // Ignoring number of threads for now.
         if (args.length < 6) {
