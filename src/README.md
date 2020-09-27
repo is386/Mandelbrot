@@ -1,6 +1,6 @@
 # Mandelbrot - Sequential
 
-Single threaded implementation of the Mandelbrot assignment. Examples were run on Tux.
+Single threaded implementation of the Mandelbrot assignment. Examples were run on Tux. Each configuration was timed 50 times, and then the times were averaged.
 
 ## Usage
 
