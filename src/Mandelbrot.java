@@ -12,7 +12,6 @@ public class Mandelbrot {
     private double xhi;
     private double ylo;
     private double yhi;
-    private int[][] imgArr;
 
     public Mandelbrot(int s, int t, double xlo, double xhi, double ylo, double yhi) {
         this.width = s;
@@ -22,22 +21,23 @@ public class Mandelbrot {
         this.xhi = xhi;
         this.ylo = ylo;
         this.yhi = yhi;
-        this.imgArr = new int[s][s];
     }
 
     // Loops over all the pixels for the image and sets the color according to the
     // iterations.
-    public void generate() {
+    public int[][] generate() {
         final long startTime = System.currentTimeMillis();
+        int[][] imgArr = new int[this.width][this.height];
         for (int i = 0; i < this.width; i++) {
             for (int j = 0; j < this.height; j++) {
                 double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                 double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
                 int iters = this.compute(xc, yc);
-                this.imgArr[i][j] = iters;
+                imgArr[i][j] = iters;
             }
         }
-        System.out.printf("Time (ms): %d", System.currentTimeMillis() - startTime);
+        System.out.printf("Time (ms): %d\n", System.currentTimeMillis() - startTime);
+        return imgArr;
     }
 
     // Computes the iterations until the threshold is reached or x^2 + y^2 < 4.
@@ -57,12 +57,12 @@ public class Mandelbrot {
     }
 
     // Saves the integer array as a png image.
-    public void save(String name) {
-        BufferedImage image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
-        Color[][] colors = mapColors();
+    public void save(String name, int[][] imgArr) {
+        BufferedImage image = new BufferedImage(imgArr.length, imgArr[0].length, BufferedImage.TYPE_INT_ARGB);
+        Color[][] colors = mapColors(imgArr);
 
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
+        for (int i = 0; i < colors.length; i++) {
+            for (int j = 0; j < colors[0].length; j++) {
                 image.setRGB(i, j, colors[i][j].getRGB());
             }
         }
@@ -75,14 +75,14 @@ public class Mandelbrot {
     }
 
     // Maps the imgArr int array to a color array.
-    private Color[][] mapColors() {
+    private Color[][] mapColors(int[][] imgArr) {
         double third = this.thresh / 3.0;
         double conversion = (255.0 / third);
-        Color[][] result = new Color[this.width][this.height];
+        Color[][] result = new Color[imgArr.length][imgArr[0].length];
 
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
-                int iters = this.imgArr[i][j];
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[0].length; j++) {
+                int iters = imgArr[i][j];
                 if (iters < third)
                     result[i][j] = new Color((int) (iters * conversion), 0, 0);
                 else if (iters < 2 * third)

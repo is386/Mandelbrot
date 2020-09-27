@@ -1,6 +1,6 @@
 # Mandelbrot - Sequential
 
-Single threaded implementation of the Mandelbrot assignment. Examples were run on Tux. Each configuration was timed 50 times, and then the times were averaged.
+Single threaded implementation of the Mandelbrot assignment. Examples were run on Tux. Each configuration was timed 10 times, and then the times were averaged. The code for the Mandelbrot generation was inspired by the provided pseudocode. The argument parsing was inspired by the code written by nac93.
 
 ## Usage
 
@@ -10,22 +10,22 @@ Compile:
 
 Run:
 
-`java Main <size> <threshold> <xlo> <xhi> <ylo> <yhi>`
+`java Main -SIZE <int> -THRESHOLD <int> -XLO <double> -XHI <double> -XHI <double> -YLO <double> -YHI <double>`
 
-## Examples
+## Benchmarks
 
-Snowman: 9.842s
+Snowman: 9.498s
 
-`java Main 1100 5000 -1.236 -1.191 0.14 0.172`
+`java Main -SIZE 1100 -THRESHOLD 5000 -XLO -1.236 -XHI -1.191 -YLO 0.14 -YHI 0.172`
 
-Fields: 9.478s
+Fields: 9.013s
 
-`java Main 1000 5000 -0.74998880248225142145 -0.74998880228812666519 0.00699725115971273323 0.00699725130530630042`
+`java Main -SIZE 1000 -THRESHOLD 5000 -XLO -0.74998880248225142145 -XHI -0.74998880228812666519 -YLO 0.00699725115971273323 -YHI 0.00699725130530630042`
 
-Dragon: 9.518s
+Dragon: 8.979s (may need to increase max heap size)
 
-`java Main 5500 250 -0.840716 -0.840732 0.22420 0.224216`
+`java Main -SIZE 5500 -THRESHOLD 250 -XLO -0.840716 -XHI -0.840732 -YLO 0.22420 -YHI 0.224216`
 
-Custom: 9.168s
+Flames: 73.08s (may need to increase max heap size)
 
-`java Main 3000 550 -0.15 -0.312 0.626 0.7532`
+`java Main -SIZE 5000 -THRESHOLD 2000 -XLO -0.2512314 -XHI -0.21245745747 -YLO 0.636780784345 -YHI 0.6532236235626`
