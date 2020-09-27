@@ -1,7 +1,3 @@
-man.png
-flames.png 
-dragon.png 
-fields.png 
-snowman.png 
-Main.class
-Mandelbrot.class
+*.png
+*.class
+*.zip
