@@ -45,17 +45,14 @@ public class Mandelbrot {
         final long startTime = System.currentTimeMillis();
         int[][] imgArr = new int[this.width][this.height];
         Thread[] thdArr = new Thread[numThreads];
-        // The number of strips in the image
+        // The number of pixels per strip in the image
         int split = Math.round(this.width / numThreads) + 1;
 
         for (int t = 0; t < numThreads; t++) {
             int w1 = split * t;
-            int w2 = split * (t + 1);
+            int w2 = Math.min(w1 + split, this.width);
             thdArr[t] = new Thread(() -> {
                 for (int i = w1; i < w2; i++) {
-                    if (i == this.width) {
-                        break;
-                    }
                     for (int j = 0; j < this.height; j++) {
                         double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                         double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
