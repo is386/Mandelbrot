@@ -49,14 +49,15 @@ public class Mandelbrot {
         int split = Math.round(this.width / numThreads) + 1;
 
         for (int t = 0; t < numThreads; t++) {
-            int h1 = split * t;
-            int h2 = split * (t + 1);
+            int t2 = t;
+            // int h1 = split * t;
+            // int h2 = split * (t + 1);
             thdArr[t] = new Thread(() -> {
                 for (int i = 0; i < this.width; i++) {
-                    for (int j = h1; j < h2; j++) {
-                        if (j >= this.width) {
-                            break;
-                        }
+                    for (int j = t2; j < this.height; j += numThreads) {
+                        // if (j >= this.width) {
+                        // break;
+                        // }
                         double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                         double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
                         imgArr[i][j] = this.compute(xc, yc);
@@ -88,14 +89,15 @@ public class Mandelbrot {
         int split = Math.round(this.width / numThreads) + 1;
 
         for (int t = 0; t < numThreads; t++) {
-            int h1 = split * t;
-            int h2 = split * (t + 1);
+            int t2 = t;
+            // int h1 = split * t;
+            // int h2 = split * (t + 1);
             thdArr[t] = new Thread(() -> {
                 for (int i = 0; i < this.width; i++) {
-                    for (int j = h1; j < h2; j++) {
-                        if (j >= this.width) {
-                            break;
-                        }
+                    for (int j = t2; j < this.height; j += numThreads) {
+                        // if (j >= this.width) {
+                        // break;
+                        // }
                         double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                         double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
                         imgArr[i][j] = this.compute(xc, yc);
