@@ -49,11 +49,53 @@ public class Mandelbrot {
         int split = Math.round(this.width / numThreads) + 1;
 
         for (int t = 0; t < numThreads; t++) {
-            int w1 = split * t;
-            int w2 = Math.min(w1 + split, this.width);
+            int h1 = split * t;
+            int h2 = split * (t + 1);
             thdArr[t] = new Thread(() -> {
-                for (int i = w1; i < w2; i++) {
-                    for (int j = 0; j < this.height; j++) {
+                for (int i = 0; i < this.width; i++) {
+                    for (int j = h1; j < h2; j++) {
+                        if (j >= this.width) {
+                            break;
+                        }
+                        double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
+                        double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
+                        imgArr[i][j] = this.compute(xc, yc);
+                    }
+                }
+            });
+        }
+        for (Thread t : thdArr) {
+            t.start();
+        }
+
+        for (Thread t : thdArr) {
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                System.out.print("Error:\n" + ex);
+            }
+        }
+
+        System.out.printf("Time (ms): %d\n", System.currentTimeMillis() - startTime);
+        return imgArr;
+    }
+
+    public int[][] dynamicThreads(int numThreads) {
+        final long startTime = System.currentTimeMillis();
+        int[][] imgArr = new int[this.width][this.height];
+        Thread[] thdArr = new Thread[numThreads];
+        // The number of pixels per strip in the image
+        int split = Math.round(this.width / numThreads) + 1;
+
+        for (int t = 0; t < numThreads; t++) {
+            int h1 = split * t;
+            int h2 = split * (t + 1);
+            thdArr[t] = new Thread(() -> {
+                for (int i = 0; i < this.width; i++) {
+                    for (int j = h1; j < h2; j++) {
+                        if (j >= this.width) {
+                            break;
+                        }
                         double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                         double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
                         imgArr[i][j] = this.compute(xc, yc);

@@ -12,6 +12,11 @@ public class Main {
                         (double) argmap.get("XLO"), (double) argmap.get("XHI"), (double) argmap.get("YLO"),
                         (double) argmap.get("YHI"));
                 imgArr = man.sequential();
+            } else if ((boolean) argmap.get("QUEUED")) {
+                man = new Mandelbrot((int) argmap.get("SIZE"), (int) argmap.get("THRESHOLD"),
+                        (double) argmap.get("XLO"), (double) argmap.get("XHI"), (double) argmap.get("YLO"),
+                        (double) argmap.get("YHI"));
+                imgArr = man.dynamicThreads((int) argmap.get("NUMTHREADS"));
             } else {
                 man = new Mandelbrot((int) argmap.get("SIZE"), (int) argmap.get("THRESHOLD"),
                         (double) argmap.get("XLO"), (double) argmap.get("XHI"), (double) argmap.get("YLO"),
@@ -54,12 +59,6 @@ public class Main {
                 marker += 2;
             } else if (args[marker].equals("-YHI")) {
                 result.put("YHI", Double.parseDouble(args[marker + 1]));
-                marker += 2;
-            } else if (args[marker].equals("-OUT")) {
-                result.put("OUT", args[marker + 1]);
-                marker += 2;
-            } else if (args[marker].equals("-RUNS")) {
-                result.put("RUNS", Integer.parseInt(args[marker + 1]));
                 marker += 2;
             } else if (args[marker].equals("-QUEUED")) {
                 result.put("QUEUED", true);
