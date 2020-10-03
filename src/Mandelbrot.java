@@ -25,17 +25,57 @@ public class Mandelbrot {
 
     // Loops over all the pixels for the image and sets the color according to the
     // iterations.
-    public int[][] generate() {
+    public int[][] sequential() {
         final long startTime = System.currentTimeMillis();
         int[][] imgArr = new int[this.width][this.height];
         for (int i = 0; i < this.width; i++) {
             for (int j = 0; j < this.height; j++) {
                 double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                 double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
-                int iters = this.compute(xc, yc);
-                imgArr[i][j] = iters;
+                imgArr[i][j] = this.compute(xc, yc);
             }
         }
+        System.out.printf("Time (ms): %d\n", System.currentTimeMillis() - startTime);
+        return imgArr;
+    }
+
+    // Splits the image into strips and then uses multiple threads to compute each
+    // strip.
+    public int[][] staticThreads(int numThreads) {
+        final long startTime = System.currentTimeMillis();
+        int[][] imgArr = new int[this.width][this.height];
+        Thread[] thdArr = new Thread[numThreads];
+        // The number of strips in the image
+        int split = Math.round(this.width / numThreads) + 1;
+
+        for (int t = 0; t < numThreads; t++) {
+            int w1 = split * t;
+            int w2 = split * (t + 1);
+            thdArr[t] = new Thread(() -> {
+                for (int i = w1; i < w2; i++) {
+                    if (i == this.width) {
+                        break;
+                    }
+                    for (int j = 0; j < this.height; j++) {
+                        double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
+                        double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
+                        imgArr[i][j] = this.compute(xc, yc);
+                    }
+                }
+            });
+        }
+        for (Thread t : thdArr) {
+            t.start();
+        }
+
+        for (Thread t : thdArr) {
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                System.out.print("Error:\n" + ex);
+            }
+        }
+
         System.out.printf("Time (ms): %d\n", System.currentTimeMillis() - startTime);
         return imgArr;
     }

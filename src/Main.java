@@ -4,11 +4,20 @@ public class Main {
     public static void main(final String[] args) throws Exception {
         // Ignoring number of threads for now.
         HashMap<String, Object> argmap = mapCommandLineArguments(args);
+        final Mandelbrot man;
+        int[][] imgArr;
         try {
-            final Mandelbrot man = new Mandelbrot((int) argmap.get("SIZE"), (int) argmap.get("THRESHOLD"),
-                    (double) argmap.get("XLO"), (double) argmap.get("XHI"), (double) argmap.get("YLO"),
-                    (double) argmap.get("YHI"));
-            int[][] imgArr = man.generate();
+            if ((int) argmap.get("NUMTHREADS") <= 1) {
+                man = new Mandelbrot((int) argmap.get("SIZE"), (int) argmap.get("THRESHOLD"),
+                        (double) argmap.get("XLO"), (double) argmap.get("XHI"), (double) argmap.get("YLO"),
+                        (double) argmap.get("YHI"));
+                imgArr = man.sequential();
+            } else {
+                man = new Mandelbrot((int) argmap.get("SIZE"), (int) argmap.get("THRESHOLD"),
+                        (double) argmap.get("XLO"), (double) argmap.get("XHI"), (double) argmap.get("YLO"),
+                        (double) argmap.get("YHI"));
+                imgArr = man.staticThreads((int) argmap.get("NUMTHREADS"));
+            }
             man.save("man.png", imgArr);
         } catch (final Exception e) {
             System.out.println(e);
