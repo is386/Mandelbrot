@@ -6,21 +6,6 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.io.File;
 
-// This class is used for the dynamic division of tasks. A Mandelbrot is split into squares.
-class Square {
-    public int minX;
-    public int maxX;
-    public int minY;
-    public int maxY;
-
-    public Square(int minX, int maxX, int minY, int maxY) {
-        this.minX = minX;
-        this.maxX = maxX;
-        this.minY = minY;
-        this.maxY = maxY;
-    }
-}
-
 public class Mandelbrot {
     private int width;
     private int height;
@@ -104,7 +89,7 @@ public class Mandelbrot {
         int[][] imgArr = new int[this.width][this.height];
         Thread[] thdArr = new Thread[numThreads];
         Queue<Square> squares = new LinkedBlockingQueue<Square>();
-        int k = 16;
+        int k = 64;
 
         // This loop creates all the squares determined by k. These will act as the
         // tasks the threads must get through.
