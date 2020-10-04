@@ -1,6 +1,6 @@
 # Mandelbrot
 
-Single and multi-threaded implementation of the Mandelbrot assignment. Examples were run on Tux. Each configuration was timed 10 times, and then the times were averaged. The code for the Mandelbrot generation was inspired by the provided pseudocode. The argument parsing was inspired by the code written by nac93. The strategy used for static work division was inspired by the assignment document. The strategy used for the dynamic work division was inspired by the assignment document and nac93.
+Single and multi-threaded implementation of the Mandelbrot assignment. Examples were run on Tux. Each configuration was timed 10 times, and then the times were averaged. The code for the Mandelbrot generation was inspired by the provided pseudo-code. The argument parsing was inspired by the code written by nac93. The strategy used for static work division was inspired by the assignment document. The strategy used for the dynamic work division was inspired by the assignment document and nac93. For the dynamic division, the worker pool and tile logic was inspired by the assignment document and nac93. hd349's implementation helped me resolve a bug with my worker queue.
 
 ## Usage
 
