@@ -10,7 +10,7 @@ Compile:
 
 Run:
 
-`java Main -SIZE <int> -THRESHOLD <int> -XLO <double> -XHI <double> -XHI <double> -YLO <double> -YHI <double> -NUMTHREADS <int>`
+`java Main -SIZE <int> -THRESHOLD <int> -XLO <double> -XHI <double> -XHI <double> -YLO <double> -YHI <double> -NUMTHREADS <int> -QUEUED`
 
 ## Benchmarks
 

@@ -2,7 +2,24 @@ import java.awt.image.BufferedImage;
 import java.awt.Color;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.io.File;
+
+// This class is used for the dynamic division of tasks. A Mandelbrot is split into squares.
+class Square {
+    public int minX;
+    public int maxX;
+    public int minY;
+    public int maxY;
+
+    public Square(int minX, int maxX, int minY, int maxY) {
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
+    }
+}
 
 public class Mandelbrot {
     private int width;
@@ -49,15 +66,14 @@ public class Mandelbrot {
         int split = Math.round(this.width / numThreads) + 1;
 
         for (int t = 0; t < numThreads; t++) {
-            int t2 = t;
-            // int h1 = split * t;
-            // int h2 = split * (t + 1);
+            int h1 = split * t;
+            int h2 = split * (t + 1);
             thdArr[t] = new Thread(() -> {
                 for (int i = 0; i < this.width; i++) {
-                    for (int j = t2; j < this.height; j += numThreads) {
-                        // if (j >= this.width) {
-                        // break;
-                        // }
+                    for (int j = h1; j < h2; j++) {
+                        if (j >= this.width) {
+                            break;
+                        }
                         double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
                         double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
                         imgArr[i][j] = this.compute(xc, yc);
@@ -81,30 +97,44 @@ public class Mandelbrot {
         return imgArr;
     }
 
+    // Splits the image into squares and then puts the squares into a worker pool.
+    // The squares are then dynamically assigned to each thread.
     public int[][] dynamicThreads(int numThreads) {
         final long startTime = System.currentTimeMillis();
         int[][] imgArr = new int[this.width][this.height];
         Thread[] thdArr = new Thread[numThreads];
-        // The number of pixels per strip in the image
-        int split = Math.round(this.width / numThreads) + 1;
+        Queue<Square> squares = new LinkedBlockingQueue<Square>();
+        int k = 16;
 
+        // This loop creates all the squares determined by k. These will act as the
+        // tasks the threads must get through.
+        for (int i = 0; i < this.width; i += k) {
+            for (int j = 0; j < this.height; j += k) {
+                Square s = new Square(i, Math.min(this.width, i + k), j, Math.min(this.height, j + k));
+                squares.add(s);
+            }
+        }
+
+        // Goes through the threads and assigns squares.
         for (int t = 0; t < numThreads; t++) {
-            int t2 = t;
-            // int h1 = split * t;
-            // int h2 = split * (t + 1);
             thdArr[t] = new Thread(() -> {
-                for (int i = 0; i < this.width; i++) {
-                    for (int j = t2; j < this.height; j += numThreads) {
-                        // if (j >= this.width) {
-                        // break;
-                        // }
-                        double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
-                        double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
-                        imgArr[i][j] = this.compute(xc, yc);
+                while (true) {
+                    Square s = squares.poll();
+                    if (s == null) {
+                        break;
+                    } else {
+                        for (int i = s.minX; i < s.maxX; i++) {
+                            for (int j = s.minY; j < s.maxY; j++) {
+                                double xc = this.xlo + (this.xhi - this.xlo) * i / this.width;
+                                double yc = this.ylo + (this.yhi - this.ylo) * j / this.height;
+                                imgArr[i][j] = this.compute(xc, yc);
+                            }
+                        }
                     }
                 }
             });
         }
+
         for (Thread t : thdArr) {
             t.start();
         }
